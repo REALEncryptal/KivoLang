@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Kivo",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Debug/kivo.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
+            "preLaunchTask": "Kivo: Build Debug"
+        }
+    ]
+}

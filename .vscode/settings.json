@@ -1,0 +1,10 @@
+{
+    "cmake.generator": "Visual Studio 18 2026",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cStandard": "c17",
+    "files.associations": {
+        "*.h": "c"
+    }
+}

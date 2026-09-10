@@ -1,0 +1,107 @@
+// Kivo syntax reference
+
+// Declarations: > is local to the current scope; => is global.
+> standardLib = include("standardLib")
+> count = 0
+> PI = 3.14159
+> name = "Alex"
+=> myGlobalVar = 999
+
+// Tables: mixed types, zero-based positional entries, named and computed keys.
+> friends = { "Sam", "Jo", 89, True }
+> record = {
+    { "Hello", 123 },
+    Test = { Birthday = 2000 },
+    ["my name"] = "Alex"
+}
+print(record[0][1], record.Test.Birthday, record["my name"])
+
+// Functions: both declaration forms are equivalent; callbacks are functions.
+> add = (a, b) { return a + b }
+> subtract(a, b) { return a - b }
+> testCallback(callback) { return callback(6, 7) }
+
+// Multiple bindings: one value broadcasts; multiple values bind in order.
+> sameA, sameB = 10
+> first, second = 10, 20
+> left, right = testCallback((a, b) { return a, b })
+
+// Standalone blocks introduce local scope.
+{
+    > message = "local to this block"
+    print(message)
+}
+
+// Conditionals: boolean conditions, required braces, local branch scopes.
+// Only the first matching branch runs; the final else is optional.
+if (count > 1) {
+    print("greater")
+} else if (count < 1) {
+    print("less")
+} else {
+    print("equal")
+}
+
+// Expressions require else and evaluate only the selected branch.
+> result = if count > 1 then 100 else 3 * (100 * 2)
+
+// Switch: :(value) is a case; :{ ... } is the default.
+switch (count) {
+    :(2) { print("two") }
+    :(1) { print("one") }
+    :{ print("other") }
+}
+
+// while checks before the body; repeat checks afterward and runs at least once.
+// Both use boolean conditions; repeat stops when until becomes True.
+while (count < 3) {
+    count = count + 1
+}
+> attempts = 0
+repeat {
+    attempts = attempts + 1
+} until (attempts > 2)
+
+/*
+for evaluates its source once and declares variables local to its body.
+Tables supply key/index, value; custom iterators supply results in order.
+Names such as i and v are ordinary variables; one name gets the first result.
+Iterator results never broadcast. _ discards a position without binding a name.
+range(start, stop, step) yields the counted number first, excluding stop.
+Step defaults to 1; negatives count down; zero is an error.
+A missing second result may be discarded with _.
+*/
+for i, v in friends { print(i, v) }
+for _, v in friends { print(v) }
+for i, _ in record { print(i) }
+for i, _ in range(1, 10) { print(i) } // 1 through 9
+
+// break exits the nearest loop. continue skips to its next check/iteration,
+// including the until check in repeat loops.
+
+/*
+Classes are values. Construction initializes fresh per-instance fields,
+then calls init(args) and returns the instance; init cannot return a replacement.
+Without init, construction accepts no arguments. self is implicit in methods;
+use self.field. Methods are shared and stay bound to the instance when retrieved.
+Fields must be declared; member names must be unique; all members are public.
+Inheritance, private members, and static methods are deferred.
+*/
+> Person = class {
+    > name = ""
+    > age = 0
+    > friends = {}
+
+    > init(name, age) {
+        self.name = name
+        self.age = age
+    }
+    > greet() { return "Hello, " + self.name }
+    > birthday() { self.age = self.age + 1 }
+}
+
+> person = Person("Alex", 20)
+print(person.name, person.greet())
+person.birthday()
+> greetLater = person.greet
+print(greetLater())

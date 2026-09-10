@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Kivo: Configure",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "-S", "${workspaceFolder}",
+                "-B", "${workspaceFolder}/build",
+                "-G", "${config:cmake.generator}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Kivo: Build Debug",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--build", "${workspaceFolder}/build",
+                "--config", "Debug",
+                "--target", "kivo"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "Kivo: Configure",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
