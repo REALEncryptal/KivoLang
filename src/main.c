@@ -1,17 +1,14 @@
+#include "file.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-int main (int argc, char *argv[]) {
-    
+
+int main (void) {
     printf("[===== KIVO =====]\n");
 
-    // Oopen the testing source
-    FILE *test_file = fopen("input.kvo", "r");
-    if (test_file == NULL) {
-        printf("Error: Could not open input.kvo\n");
-        return 1;
-    }
+    char *source = getSource("input.kvo");
 
-    
+    printf("here is the first letter: %c\n", *source);
 
     return 0;
 }

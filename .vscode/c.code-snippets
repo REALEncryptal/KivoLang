@@ -1,0 +1,15 @@
+{
+    "Header guard": {
+        "scope": "c",
+        "prefix": "guard",
+        "body": [
+            "#ifndef ${1:KIVO_HEADER_H}",
+            "#define $1",
+            "",
+            "$0",
+            "",
+            "#endif // $1"
+        ],
+        "description": "Insert a header guard; enter a unique macro name once."
+    }
+}
