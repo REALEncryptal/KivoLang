@@ -23,9 +23,17 @@ char *read_file(FILE *file) {
 char *get_source(const char *filename) {
     FILE *file = NULL;
 
+    // fopen_s only exists on MSVC; everywhere else use plain fopen
+#ifdef _MSC_VER
     if (fopen_s(&file, filename, "r") != 0) {
         return NULL;
     }
+#else
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        return NULL;
+    }
+#endif
 
     char *source = read_file(file);
     fclose(file);

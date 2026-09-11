@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Kivo",
+            "name": "Debug Kivo (Windows)",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Debug/kivo.exe",
@@ -10,6 +10,18 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "console": "integratedTerminal",
+            "preLaunchTask": "Kivo: Build Debug"
+        },
+        {
+            "name": "Debug Kivo (macOS)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/kivo",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "MIMode": "lldb",
             "preLaunchTask": "Kivo: Build Debug"
         }
     ]

@@ -5,11 +5,12 @@
             "label": "Kivo: Configure",
             "type": "process",
             "command": "cmake",
-            "args": [
-                "-S", "${workspaceFolder}",
-                "-B", "${workspaceFolder}/build",
-                "-G", "${config:cmake.generator}"
-            ],
+            "windows": {
+                "args": ["--preset", "windows"]
+            },
+            "osx": {
+                "args": ["--preset", "macos"]
+            },
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -32,7 +33,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$msCompile"
+            "problemMatcher": ["$msCompile", "$gcc"]
         }
     ]
 }

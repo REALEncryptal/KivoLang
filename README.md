@@ -14,7 +14,9 @@ tests/            C tests named test_*.c, with any subfolders
 examples/         Future programs written in Kivo
 docs/             Language design notes and documentation
 CMakeLists.txt    C17 executable target and compiler warnings
+CMakePresets.json Per-OS CMake settings (Windows and macOS)
 run.cmd           Build and run with one command on Windows
+run.sh            Build and run with one command on macOS
 .vscode/          VS Code IntelliSense, build tasks, and debugger settings
 ```
 
@@ -26,10 +28,10 @@ Open this folder in VS Code. The workspace uses the installed Visual Studio 2026
 Build Tools and recommends Microsoft's C/C++ and CMake Tools extensions.
 Both extensions are already installed on this machine.
 
-- CMake configures when you open the folder. If asked to select a kit, choose
-  the Visual Studio 2026 amd64 kit.
+- CMake configures when you open the folder. If asked to select a configure
+  preset, choose **Windows (Visual Studio 2026)**.
 - Press **Ctrl+Shift+B** to configure and build the Debug executable.
-- Set a breakpoint, then press **F5** and select **Debug Kivo** to build and debug.
+- Set a breakpoint, then press **F5** and select **Debug Kivo (Windows)** to build and debug.
 - Press **Ctrl+F5** to build and run without debugging.
 
 The program runs in VS Code's integrated terminal with the project root as its
@@ -41,30 +43,53 @@ and search `include/` and `src/` for headers. Keep these flags in sync if you
 change the language standard, include directories, or add compile definitions in
 CMake. CMake continues to control the actual MSVC build.
 
+## VS Code on macOS
+
+Install the Xcode Command Line Tools (`xcode-select --install`) for clang and
+lldb, and CMake 3.21 or newer (`brew install cmake`). Then open this folder in
+VS Code with the same recommended extensions.
+
+- CMake configures when you open the folder. If asked to select a configure
+  preset, choose **macOS (Unix Makefiles, Debug)**.
+- Press **Cmd+Shift+B** to configure and build the Debug executable.
+- Set a breakpoint, then press **F5** and select **Debug Kivo (macOS)** to build and debug.
+- Press **Ctrl+F5** to build and run without debugging.
+
+Program output appears in the Debug Console. clangd uses the same
+`compile_flags.txt` as on Windows.
+
 ## Build and run from the terminal
 
-From the project root in PowerShell or Command Prompt:
+From the project root in PowerShell or Command Prompt on Windows:
 
 ```powershell
 .\run.cmd
+```
+
+Or from the project root in a macOS terminal:
+
+```sh
+./run.sh
 ```
 
 This configures CMake, builds the Debug executable, and runs it from the project
 root. Unchanged files are reused; a failed build stops before running the program.
 Arguments after the command are forwarded to Kivo, and its exit code is preserved.
 
-To run the existing executable without building, use `.\build\Debug\kivo.exe`.
+To run the existing executable without building, use `.\build\Debug\kivo.exe`
+on Windows or `./build/kivo` on macOS.
 
 ## Configure
 
-Requires CMake 3.20 or newer and a C17 compiler, such as MSVC, GCC, or Clang.
-Run commands from the project root.
+Requires CMake 3.21 or newer (for `CMakePresets.json`) and a C17 compiler, such
+as MSVC, GCC, or Clang. Run commands from the project root.
 
 ```sh
-cmake -S . -B build
+cmake --preset windows   # on Windows
+cmake --preset macos     # on macOS
 ```
 
-On this Windows machine, CMake can use the installed Visual Studio Build Tools.
+Each preset appears only on its own OS. Both put the build in `build/`.
 
 ## Start coding
 
@@ -136,10 +161,10 @@ it with your actual lexer API when writing your tests. Returning `0` passes;
 returning a nonzero number fails. Explicit checks also work in Release builds,
 where the standard `assert()` macro can be disabled.
 
-From the project root, configure, build, and run:
+From the project root, configure, build, and run (use `--preset macos` on macOS):
 
 ```powershell
-cmake -S . -B build
+cmake --preset windows
 cmake --build build --config Debug
 ctest --test-dir build -C Debug --output-on-failure
 ```
