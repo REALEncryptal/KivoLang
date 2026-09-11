@@ -1,6 +1,7 @@
 # Kivo
 
 A custom programming language written in C.
+AI was only used to scaffold the project but no code. 
 
 The project scaffolding is ready for you to implement the language from scratch.
 

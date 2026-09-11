@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 // Reads file into a buffer and returns it
-char *readFile(FILE *file) {
+char *read_file(FILE *file) {
     rewind(file); // reset everything
 
     fseek(file, 0, SEEK_END); // go to end of file
@@ -12,19 +12,22 @@ char *readFile(FILE *file) {
 
     // allocate enough memory to store the entirer file as well as \0 
     char *source = malloc(size + 1);
-    fread(source, 1, size, file); // read into our buffer
+    size_t bytes_read = fread(source, 1, size, file); // read into our buffer
+    
+    // add \0 
+    source[bytes_read] = '\0';// bytes read is important cause things like errors might change the size
 
     return source;
 }
 
-char *getSource(const char *filename) {
+char *get_source(const char *filename) {
     FILE *file = NULL;
 
     if (fopen_s(&file, filename, "r") != 0) {
         return NULL;
     }
 
-    char *source = readFile(file);
+    char *source = read_file(file);
     fclose(file);
 
     return source;

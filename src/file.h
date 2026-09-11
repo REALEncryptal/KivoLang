@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-char *readFile(FILE *file);
-char *getSource(const char *filename);
+char *read_file(FILE *file);
+char *get_source(const char *filename);
 
 #endif
