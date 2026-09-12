@@ -1,3 +1,4 @@
+#include <iso646.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,9 +59,14 @@ Token* tokenize(char *source) {
                 case '}': type = TOKEN_BRACE_RIGHT; break;
                 case '(': type = TOKEN_PAREN_LEFT; break;
                 case ')': type = TOKEN_PAREN_RIGHT; break;
+
+                default: scanned_token = scan_comparison_and_logic(source, &current); break;
             }
 
-            scanned_token = (Token) {type, current, 1};
+            // only create the new token if we dont already have one set.
+            if (scanned_token.type == TOKEN_NONE) {
+                scanned_token = (Token) {type, current, 1};
+            }
         }
 
         // add token
@@ -85,7 +91,7 @@ Token scan_number(char *source, size_t *current) {
     while (1) {
         char *c = source + *current;
         if ( !isdigit(*c) ) break; // not digit anymore, break out
-        *current = *current + 1;
+        (*current)++;
     }
 
     return (Token) {
@@ -96,13 +102,13 @@ Token scan_number(char *source, size_t *current) {
 }
 
 Token scan_string(char *source, size_t *current) {
-    *current = *current + 1; // consume first "
+    (*current)++; // consume first "
     size_t start = *current; 
 
     while (1) {
         char *c = source + *current;
         if ( *c=='"' ) break; // not string end.
-        *current = *current + 1;
+        (*current)++;
     }
 
     return (Token) {
@@ -122,7 +128,7 @@ Token scan_identifier_and_keyword(char *source, size_t *current) {
             !isalnum(*c) // is it a alnum?
             && !( *c == '_' ) // or a _?
         ) break; // we dont check if the first char is a digit because that is already done earlier
-        *current = *current + 1;
+        (*current)++;
     }
 
     // check if its a reserved word
@@ -150,6 +156,47 @@ Token scan_identifier_and_keyword(char *source, size_t *current) {
     };
 }
 
+Token scan_comparison_and_logic(char *source, size_t *current) {
+    size_t start = *current;
+
+    TokenType type;
+    char *c = source + *current;
+    char *next_char = source + *current + 1;
+
+    switch (*c) {
+        case ('='): type = consume_match('=', source, current) ? TOKEN_EQUAL : TOKEN_ASSIGN; break;
+        case ('!'): type = consume_match('=', source, current) ? TOKEN_NOT_EQUAL : TOKEN_NOT; break;
+        case ('<'): type = consume_match('=', source, current) ? TOKEN_LESS_EQUAL : TOKEN_LESS; break;
+        case ('>'): type = consume_match('=', source, current) ? TOKEN_GREATER_EQUAL : TOKEN_GREATER; break;
+        case ('&'): type = consume_match('&', source, current) ? TOKEN_AND : TOKEN_AMPERSAND; break;
+        case ('|'): type = consume_match('|', source, current) ? TOKEN_OR : TOKEN_PIPE; break;
+        default: printf("How did we get here? %c\n", *(next_char-1));
+    }
+
+    return (Token) {    
+        type,
+        start,
+        *current + 1 - start
+    };
+}
+
+
+// check if the next char == expected. if so consume and incrememnt current and return true
+int consume_match(char expected, char *source, size_t *current) {
+    if (*current >= strlen(source)) return 0;
+
+    char *c = source + *current + 1;
+
+    // matches
+    if (*c == expected) {
+        (*current)++; // consume
+        return 1;
+    }
+
+    // doesnt match
+    return 0;
+}
+
 // debugging
 
 void print_token(Token *token, char *source) {
@@ -157,7 +204,7 @@ void print_token(Token *token, char *source) {
 }
 
 void testing(void) {
-    char source[] = "myVar 123 \"hello\" + - * / ^ % [ ] { } ( ) = == ! != < <= > >= & && | || let global if else while";
+    char source[] = "myVar 123 \"hello\" + - * / ^ % [ ] { } ( ) \"comparison!!!!\" = == ! != < <= > >= & && | || let global if else while \n";
     printf("Input: %s", source);
 
     Token *tokens = tokenize(source);
