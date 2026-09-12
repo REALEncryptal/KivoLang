@@ -11,7 +11,8 @@ int main (void) {
     printf("here is the first letter: %c\n", *source);
 
     printf("-------[ test ]-------\n");
-    testing();
+    Token *tokens = tokenize(source);
+    print_tokens(tokens, source);
 
     return 0;
 }

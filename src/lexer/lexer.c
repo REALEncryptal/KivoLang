@@ -60,22 +60,23 @@ Token* tokenize(char *source) {
                 case '(': type = TOKEN_PAREN_LEFT; break;
                 case ')': type = TOKEN_PAREN_RIGHT; break;
 
+                case '.': type = TOKEN_DOT; break;
+
                 default: scanned_token = scan_comparison_and_logic(source, &current); break;
             }
 
             // only create the new token if we dont already have one set.
             if (scanned_token.type == TOKEN_NONE) {
                 scanned_token = (Token) {type, current, 1};
+                current ++;
             }
-        }
+        } else current ++; // whitespaces, other errors
 
         // add token
         if (scanned_token.type != TOKEN_NONE) {
             tokens[token_count] = scanned_token;
             token_count ++;
         }
-
-        current++;
     }
 
     // add final eof token
@@ -111,10 +112,13 @@ Token scan_string(char *source, size_t *current) {
         (*current)++;
     }
 
+    // consume final "
+    (*current)++;
+
     return (Token) {
         TOKEN_STRING,
         start,
-        *current - start
+        *current - 1 - start
     };
 }
 
@@ -173,10 +177,12 @@ Token scan_comparison_and_logic(char *source, size_t *current) {
         default: printf("How did we get here? %c\n", *(next_char-1));
     }
 
+    (*current)++;
+
     return (Token) {    
         type,
         start,
-        *current + 1 - start
+        *current - start
     };
 }
 
@@ -198,21 +204,38 @@ int consume_match(char expected, char *source, size_t *current) {
 }
 
 // debugging
-
-void print_token(Token *token, char *source) {
-    printf("<%.*s>%s\n", token->length, source + token->start, token_names[token->type]);
+// ai generated cause this lowk not important
+static void print_token_text(const char *text, int length) {
+    putchar('"');
+    for (int i = 0; i < length; i++) {
+        unsigned char c = (unsigned char)text[i];
+        switch (c) {
+            case '\n': fputs("\\n", stdout); break;
+            case '\r': fputs("\\r", stdout); break;
+            case '\t': fputs("\\t", stdout); break;
+            case '"': fputs("\\\"", stdout); break;
+            case '\\': fputs("\\\\", stdout); break;
+            default:
+                if (c < 32 || c == 127) {
+                    printf("\\x%02X", (unsigned int)c);
+                } else {
+                    putchar(c);
+                }
+                break;
+        }
+    }
+    putchar('"');
 }
 
-void testing(void) {
-    char source[] = "myVar 123 \"hello\" + - * / ^ % [ ] { } ( ) \"comparison!!!!\" = == ! != < <= > >= & && | || let global if else while \n";
-    printf("Input: %s", source);
+void print_token(Token *token, char *source) {
+    printf("%-22s %6d %6d  ", token_names[token->type], token->start, token->length);
+    print_token_text(source + token->start, token->length);
+    putchar('\n');
+}
 
-    Token *tokens = tokenize(source);
-
-    // loop until eof   
-    printf("Tokens:\n");
+void print_tokens(Token *tokens, char *source) {
+    printf("%-22s %6s %6s  %s\n", "TYPE", "START", "LENGTH", "TEXT");
     for (int i=0; tokens[i].type != TOKEN_EOF; i++) {
         print_token(&tokens[i], source);
     }
-    printf("---- EOF ----\n");
 }

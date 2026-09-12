@@ -13,6 +13,6 @@ Token scan_comparison_and_logic(char *source, size_t *current);
 int consume_match(char expected, char *source, size_t *current);
 
 void print_token(Token *token, char *source);
-void testing(void);
+void print_tokens(Token *tokens, char *source);
 
 #endif // KIVO_LEXER_H

@@ -47,6 +47,9 @@ typedef enum {
     TOKEN_WHILE,
     TOKEN_FOR,
 
+    // Misc
+    TOKEN_DOT,
+
     // Special
     TOKEN_EOF, // end of file
     TOKEN_ERROR, // inbavid text like some random chinese letter
@@ -98,10 +101,15 @@ static const char *const token_names[] = {
     [TOKEN_IF]     = "TOKEN_IF",
     [TOKEN_ELSE]   = "TOKEN_ELSE",
     [TOKEN_WHILE]  = "TOKEN_WHILE",
+    [TOKEN_FOR]    = "TOKEN_FOR",
+
+    // Misc
+    [TOKEN_DOT] = "TOKEN_DOT",
 
     // Special
     [TOKEN_EOF]   = "TOKEN_EOF",
     [TOKEN_ERROR] = "TOKEN_ERROR",
+    [TOKEN_NONE]  = "TOKEN_NONE",
 };
 
 typedef struct {
