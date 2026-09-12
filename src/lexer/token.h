@@ -49,6 +49,7 @@ typedef enum {
 
     // Misc
     TOKEN_DOT,
+    TOKEN_COMMA,
 
     // Special
     TOKEN_EOF, // end of file
@@ -105,6 +106,7 @@ static const char *const token_names[] = {
 
     // Misc
     [TOKEN_DOT] = "TOKEN_DOT",
+    [TOKEN_COMMA] = "TOKEN_COMMA",
 
     // Special
     [TOKEN_EOF]   = "TOKEN_EOF",

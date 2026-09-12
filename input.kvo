@@ -1,7 +1,7 @@
-let name = "Alex"
-
-if (bonnie.friend_level >= 100) {
-    befriend(bonnie)
+let friends = { "Sam", "Jo", 89, True }
+let record = {
+    { "Hello", 123 },
+    Test = { Birthday = 2000 },
+    ["my name"] = "Alex"
 }
-
-object.test
+print(record[0][1], record.Test.Birthday, record["my name"])

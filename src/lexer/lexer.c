@@ -61,6 +61,7 @@ Token* tokenize(char *source) {
                 case ')': type = TOKEN_PAREN_RIGHT; break;
 
                 case '.': type = TOKEN_DOT; break;
+                case ',': type = TOKEN_COMMA; break;
 
                 default: scanned_token = scan_comparison_and_logic(source, &current); break;
             }
