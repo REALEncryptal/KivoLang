@@ -42,7 +42,7 @@ Token* tokenize(char *source) {
             scanned_token = scan_identifier_and_keyword(source, &current);
         } else if (*c=='"') { // scan string
             scanned_token = scan_string(source, &current);
-        } else if (!isspace(*c)) { // first char is a symbol
+        } else if (!isspace(*c) || *c=='\n') { // first char is a symbol
             TokenType type = TOKEN_NONE;
 
             switch (*c) {
@@ -62,6 +62,8 @@ Token* tokenize(char *source) {
 
                 case '.': type = TOKEN_DOT; break;
                 case ',': type = TOKEN_COMMA; break;
+                case ';': type = TOKEN_SEMICOLON; break;
+                case '\n': type = TOKEN_NEWLINE; break;
 
                 default: scanned_token = scan_comparison_and_logic(source, &current); break;
             }

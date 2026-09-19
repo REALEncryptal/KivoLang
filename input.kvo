@@ -1,7 +1,1 @@
-let friends = { "Sam", "Jo", 89, True }
-let record = {
-    { "Hello", 123 },
-    Test = { Birthday = 2000 },
-    ["my name"] = "Alex"
-}
-print(record[0][1], record.Test.Birthday, record["my name"])
+1 + 2 * 3

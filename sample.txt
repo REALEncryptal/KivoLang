@@ -7,14 +7,14 @@ let PI = 3.14159
 let name = "Alex"
 let myGlobalVar = 999
 
-// Tables: mixed types, zero-based positional entries, named and computed keys.
+// Tables: mixed types, zero-based positional entries, named keys.
 let friends = { "Sam", "Jo", 89, True }
 let record = {
     { "Hello", 123 },
     Test = { Birthday = 2000 },
-    ["my name"] = "Alex"
+    myname = "Alex"
 }
-print(record[0][1], record.Test.Birthday, record["my name"])
+print(record[0][1], record.Test.Birthday, record.myname)
 
 // Functions: both declaration forms are equivalent; callbacks are functions.
 let add = (a, b) { return a + b }
