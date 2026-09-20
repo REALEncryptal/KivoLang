@@ -19,7 +19,7 @@ let myVar2 = 12589
 
 */
 
-Token* tokenize(char *source) {
+Token* tokenize(const char *source) {
     Token *tokens = malloc(sizeof(Token) * 1000); // todo: dynamic list
     size_t start = 0;
     size_t current = 0; // track both
@@ -31,7 +31,7 @@ Token* tokenize(char *source) {
     while (1) {
         if (current >= source_length) break;
         start = current;
-        char *c = source + current;
+        const char *c = source + current;
 
         Token scanned_token = (Token){ TOKEN_NONE };
 
@@ -65,7 +65,11 @@ Token* tokenize(char *source) {
                 case ';': type = TOKEN_SEMICOLON; break;
                 case '\n': type = TOKEN_NEWLINE; break;
 
-                default: scanned_token = scan_comparison_and_logic(source, &current); break;
+                default: 
+                    if (strchr("=!<>&|", *c) == NULL) {
+                        type = TOKEN_ERROR;
+                    } else scanned_token = scan_comparison_and_logic(source, &current); 
+                    break;
             }
 
             // only create the new token if we dont already have one set.
@@ -89,11 +93,11 @@ Token* tokenize(char *source) {
 }
 
 // SCANNERS
-Token scan_number(char *source, size_t *current) {
+Token scan_number(const char *source, size_t *current) {
     size_t start = *current;
 
     while (1) {
-        char *c = source + *current;
+        const char *c = source + *current;
         if ( !isdigit(*c) ) break; // not digit anymore, break out
         (*current)++;
     }
@@ -105,12 +109,12 @@ Token scan_number(char *source, size_t *current) {
     };
 }
 
-Token scan_string(char *source, size_t *current) {
+Token scan_string(const char *source, size_t *current) {
     (*current)++; // consume first "
     size_t start = *current; 
 
     while (1) {
-        char *c = source + *current;
+        const char *c = source + *current;
         if ( *c=='"' ) break; // not string end.
         (*current)++;
     }
@@ -125,12 +129,12 @@ Token scan_string(char *source, size_t *current) {
     };
 }
 
-Token scan_identifier_and_keyword(char *source, size_t *current) {
+Token scan_identifier_and_keyword(const char *source, size_t *current) {
     TokenType type = TOKEN_IDENTIFIER;
     size_t start = *current;
 
     while (1) {
-        char *c = source + *current;
+        const char *c = source + *current;
         if (
             !isalnum(*c) // is it a alnum?
             && !( *c == '_' ) // or a _?
@@ -140,7 +144,7 @@ Token scan_identifier_and_keyword(char *source, size_t *current) {
 
     // check if its a reserved word
     size_t length = *current - start;
-    char *text = source + start;
+    const char *text = source + start;
 
     if (length == 3 && strncmp(text, "let", length) == 0) {
         type = TOKEN_LET;
@@ -163,12 +167,12 @@ Token scan_identifier_and_keyword(char *source, size_t *current) {
     };
 }
 
-Token scan_comparison_and_logic(char *source, size_t *current) {
+Token scan_comparison_and_logic(const char *source, size_t *current) {
     size_t start = *current;
 
     TokenType type;
-    char *c = source + *current;
-    char *next_char = source + *current + 1;
+    const char *c = source + *current;
+    const char *next_char = source + *current + 1;
 
     switch (*c) {
         case ('='): type = consume_match('=', source, current) ? TOKEN_EQUAL : TOKEN_ASSIGN; break;
@@ -191,10 +195,10 @@ Token scan_comparison_and_logic(char *source, size_t *current) {
 
 
 // check if the next char == expected. if so consume and incrememnt current and return true
-int consume_match(char expected, char *source, size_t *current) {
+int consume_match(char expected, const char *source, size_t *current) {
     if (*current >= strlen(source)) return 0;
 
-    char *c = source + *current + 1;
+    const char *c = source + *current + 1;
 
     // matches
     if (*c == expected) {
@@ -230,13 +234,13 @@ static void print_token_text(const char *text, int length) {
     putchar('"');
 }
 
-void print_token(Token *token, char *source) {
+void print_token(Token *token, const char *source) {
     printf("%-22s %6d %6d  ", token_names[token->type], token->start, token->length);
     print_token_text(source + token->start, token->length);
     putchar('\n');
 }
 
-void print_tokens(Token *tokens, char *source) {
+void print_tokens(Token *tokens, const char *source) {
     printf("%-22s %6s %6s  %s\n", "TYPE", "START", "LENGTH", "TEXT");
     for (int i=0; tokens[i].type != TOKEN_EOF; i++) {
         print_token(&tokens[i], source);

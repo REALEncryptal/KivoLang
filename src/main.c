@@ -6,7 +6,7 @@
 int main (void) {
     printf("[===== KIVO =====]\n");
 
-    char *source = get_source("input.kvo");
+    const char *source = get_source("input.kvo");
 
     printf("here is the first letter: %c\n", *source);
 

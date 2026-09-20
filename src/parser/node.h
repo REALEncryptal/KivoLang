@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "../lexer/token.h"
 #include "../main.h"
+#include "source.h"
 
 typedef enum {
 
@@ -117,7 +118,7 @@ struct Node {
         } return_stmnt;
 
         // continyue
-        struct {} continue_stmnt;
+        //struct {} continue_stmnt;
 
         //== expressions
         // identifier
@@ -172,7 +173,7 @@ struct Node {
         } member_expr;
 
         // Table TODO: Implement table node struct
-        struct {} table_expr;
+        //struct {} table_expr;
 
         // Function.  let myfunc = (param){block}.  OR   let myfunc(param){block}
         struct {
@@ -189,7 +190,7 @@ struct Node {
         } if_expr;
 
         // Class TODO: Implement class node struct
-        struct {} class_expr;
+        //struct {} class_expr;
     } as;
 };
 
