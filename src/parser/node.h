@@ -58,22 +58,24 @@ struct Node {
         // chunk
         struct {
             Node **statements; // need to make a growing list before anything else
+            size_t statement_count;
         } chunk;
 
         // block
         struct {
             Node **statements; // need to make a growing list before anything else
+            size_t statement_count;
         } block;
 
         // let 
         struct {
-            Node *identifier;
+            Token identifier;
             Node *expression;
         } let_stmnt;
 
         // assignment
         struct {
-            Node *identifier;
+            Token identifier;
             Node *expression;
         } assign_stmnt;
 
@@ -106,8 +108,8 @@ struct Node {
 
         // for
         struct {
-            Node *index_identifier;
-            Node *value_identifier;
+            Token index_identifier;
+            Token value_identifier;
             Node *table;
             Node *body; // Node_BLOCK
         } for_stmnt;

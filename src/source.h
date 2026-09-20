@@ -9,8 +9,8 @@ typedef struct {
     size_t length;
 } SourcePosition;
 
-int read_token_int(const char *source, Token token);
-char *read_token(const char *source, Token token);
+int read_token_int(const char *source, Token token, int *num);
+int read_token(const char *source, Token token, char *buffer);
 
 SourcePosition get_position_range(Token start, Token end);
 SourcePosition get_position(Token token);
